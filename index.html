@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Roster Management</title>
+    <link rel="stylesheet" href="./styles.css?v=4" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">DATASTRAW</p>
+          <h1>Smart Roster Management</h1>
+        </div>
+
+        <div class="toolbar">
+          <label class="field-inline">
+            <span>Month</span>
+            <input id="monthPicker" type="month" />
+          </label>
+          <label class="field-inline">
+            <span>View</span>
+            <select id="viewMode">
+              <option value="company">Company-wide</option>
+              <option value="pod">Pod-wise</option>
+              <option value="brand">Brand-wise</option>
+              <option value="process">Process-wise</option>
+              <option value="employee">Employee-wise</option>
+            </select>
+          </label>
+          <button id="generateBtn" class="primary-btn">Generate roster</button>
+          <button id="validateBtn" class="secondary-btn">Revalidate roster</button>
+          <button id="exportBtn" class="secondary-btn">Export CSV</button>
+          <button id="resetBtn" class="secondary-btn">Reset data</button>
+        </div>
+      </header>
+
+      <p id="dashboardStatus" class="form-status" role="status" aria-live="polite"></p>
+
+      <main class="layout">
+        <aside class="panel left-panel">
+          <section class="card">
+            <h3>Employee</h3>
+            <form id="employeeForm" class="stack-form">
+              <input id="employeeName" type="text" placeholder="Employee name" required />
+              <select id="employeePod"></select>
+              <select id="employeeWeeklyOff">
+                <option value="Sun">Sunday</option>
+                <option value="Mon">Monday</option>
+                <option value="Tue">Tuesday</option>
+                <option value="Wed">Wednesday</option>
+                <option value="Thu">Thursday</option>
+                <option value="Fri">Friday</option>
+                <option value="Sat">Saturday</option>
+              </select>
+              <button type="submit">Add employee</button>
+              <p id="employeeStatus" class="form-status" role="status" aria-live="polite"></p>
+            </form>
+            <form id="employeeUpdateForm" class="stack-form management-form">
+              <select id="employeeUpdateSelect" aria-label="Employee to update" required></select>
+              <select id="employeeUpdateWeeklyOff" aria-label="Weekly day off">
+                <option value="Sun">Sunday</option>
+                <option value="Mon">Monday</option>
+                <option value="Tue">Tuesday</option>
+                <option value="Wed">Wednesday</option>
+                <option value="Thu">Thursday</option>
+                <option value="Fri">Friday</option>
+                <option value="Sat">Saturday</option>
+              </select>
+              <select id="employeeUpdateActive" aria-label="Employee status">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </select>
+              <button type="submit">Update employee</button>
+              <p id="employeeUpdateStatus" class="form-status" role="status" aria-live="polite"></p>
+            </form>
+          </section>
+
+          <section class="card">
+            <h3>Brand</h3>
+            <form id="brandForm" class="stack-form">
+              <input id="brandName" type="text" placeholder="Brand name" required />
+              <select id="brandPod"></select>
+              <button type="submit">Add brand</button>
+            </form>
+          </section>
+
+          <section class="card">
+            <h3>Process</h3>
+            <form id="processForm" class="stack-form">
+              <input id="processName" type="text" placeholder="Process name" required />
+              <select id="processRule">
+                <option value="all-days">365-day coverage</option>
+                <option value="weekday-no-holiday">Weekdays only</option>
+                <option value="weekday-and-holiday">Weekdays with holiday off</option>
+                <option value="weekend-off">Sunday + holiday off</option>
+              </select>
+              <input id="processCoverage" type="number" min="1" max="4" value="1" />
+              <button type="submit">Add process</button>
+            </form>
+          </section>
+
+          <section class="card">
+            <h3>Assignments</h3>
+            <form id="assignmentForm" class="stack-form">
+              <select id="assignmentEmployee"></select>
+              <select id="assignmentBrand"></select>
+              <select id="assignmentProcess"></select>
+              <button type="submit">Assign</button>
+            </form>
+            <form id="removeAssignmentForm" class="stack-form management-form">
+              <select id="removeAssignment"></select>
+              <button type="button" id="removeAssignmentBtn" class="danger-btn">Remove assignment</button>
+            </form>
+          </section>
+
+          <section class="card">
+            <h3>Leave & availability</h3>
+            <form id="leaveForm" class="stack-form">
+              <select id="leaveEmployee"></select>
+              <input id="leaveDate" type="date" />
+              <select id="leaveType">
+                <option value="leave">Leave</option>
+                <option value="comp-off">Comp-off</option>
+                <option value="unavailable">Unavailable</option>
+              </select>
+              <button type="submit">Save change</button>
+            </form>
+          </section>
+
+          <section class="card">
+            <h3>Public holiday</h3>
+            <form id="holidayForm" class="stack-form">
+              <input id="holidayDate" type="date" required />
+              <input id="holidayName" type="text" placeholder="Holiday name" />
+              <button type="submit">Add holiday</button>
+            </form>
+          </section>
+
+          <section class="card">
+            <h3>Daily override</h3>
+            <form id="overrideForm" class="stack-form">
+              <select id="overrideEmployee"></select>
+              <input id="overrideDate" type="date" required />
+              <select id="overrideStatus">
+                <option value="work">Available / work</option>
+                <option value="off">Unavailable / off</option>
+                <option value="clear">Clear override</option>
+              </select>
+              <button type="submit">Apply override</button>
+            </form>
+          </section>
+        </aside>
+
+        <section class="center-panel">
+          <div class="kpis" id="kpiRow"></div>
+
+          <div class="card">
+            <div class="filter-row">
+              <select id="brandFilter"></select>
+              <select id="podFilter"></select>
+              <select id="processFilter"></select>
+            </div>
+            <div id="rosterGrid" class="roster-grid"></div>
+          </div>
+        </section>
+
+        <aside class="panel right-panel">
+          <section class="card">
+            <h3>Validation summary</h3>
+            <ul id="conflictList" class="summary-list"></ul>
+          </section>
+
+          <section class="card">
+            <h3>Employee workload</h3>
+            <ul id="workloadList" class="summary-list"></ul>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <script src="./config.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+.env
+server/.env
+.env.*
+!.env.example
+node_modules/
+server/node_modules/
+dist/
+.vercel/
+logs/
+*.log
+secrets/
+credentials/
+*.pem
+*.key
+*.p12
+*.pfx
+*.secret
