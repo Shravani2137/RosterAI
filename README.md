@@ -180,3 +180,80 @@ Deploy the backend first if possible, then configure the frontend with its URL. 
 - Leave, holiday, and daily override controls are browser-side data and are not currently inputs to backend roster generation.
 - The generator is a simple greedy scheduler, not an optimization solver. More complex availability, fairness, and shift preferences need additional models and tests.
 - Future improvements include database persistence, authenticated roles, server-side leave/holiday APIs, richer reporting, and automated end-to-end tests.
+
+## Design Decisions & Approach
+
+### 1. How did I model employees, brands, processes, pods, and their relationships?
+
+I modelled the system using separate entities for Employees, Pods, Brands, Processes, Assignments and Rules. This separation makes the system easier to manage and extend.
+
+- **Employees:** Store employee information such as name, pod, weekly off and active status.
+- **Pods:** Organize employees into operational teams.
+- **Brands:** Represent the clients or brands for which operational work is performed.
+- **Processes:** Represent different workflows, such as CS, ACC, Retention and NDR.
+- **Assignments:** Connect employees with the brands and processes they are eligible to handle.
+- **Rules:** Define operational requirements and roster-related constraints.
+
+I used separate entities rather than combining everything into one structure so that employee details, brand requirements and staffing assignments can be managed independently.
+
+### 2. How does the system generate a roster and determine whether it satisfies the required constraints?
+
+The roster generation process uses employee availability, weekly offs, assignments and configured staffing requirements to generate employee allocations.
+
+The system considers whether an employee is active, eligible for the required brand and process, and available on the required day. After roster generation, validation is used to identify scheduling issues and coverage gaps.
+
+This approach helps reduce manual scheduling effort while ensuring that the generated roster can be reviewed for constraint violations.
+
+### 3. How did I handle single-resource brands and brands with multiple employees?
+
+I handled staffing through configurable assignments and staffing requirements rather than assuming that every brand has the same number of employees.
+
+For single-resource brands, the assigned employee may handle multiple processes for that brand. For brands requiring multiple employees, staffing can be distributed among eligible employees according to the configured assignments and requirements.
+
+This makes the system flexible enough to represent different operational staffing structures.
+
+### 4. What happens when an employee manages all processes for a brand but is unavailable on a required working day?
+
+If a dedicated employee is unavailable due to a weekly off or other availability constraint, the system should identify the resulting coverage gap during roster validation.
+
+If no eligible replacement is available, the gap cannot be considered resolved simply by generating the roster. It needs to be highlighted for review and staffing adjustment.
+
+This is particularly important for single-resource brands because they have a higher risk of coverage gaps.
+
+### 5. How does the system handle conflicting requirements or insufficient staffing?
+
+The system uses roster validation to identify conflicts such as insufficient staffing, unavailable employees and scheduling issues.
+
+Instead of silently treating an incomplete roster as valid, these issues should be surfaced so that the roster can be reviewed and corrected.
+
+The system supports the idea that operational requirements should not be ignored just to complete roster generation. Conflicts require either a staffing adjustment or a human decision.
+
+### 6. Which parts did I automate, and which did I leave under human control? Why?
+
+I automated employee and assignment management, roster generation and roster validation to reduce repetitive manual work and make scheduling more organized.
+
+I kept final roster review, conflict resolution and operational decisions under human control. This is important because staffing decisions can affect business coverage, employee availability and operational priorities.
+
+Automation can suggest and organize allocations, but a manager should retain control over exceptional situations.
+
+### 7. If the company doubled its team and brand count, what would I change?
+
+If the team and brand count doubled, I would move from the current lightweight data storage approach to a persistent database with a structured schema, indexing and stronger data integrity constraints.
+
+I would also improve the roster generation algorithm to handle larger scheduling workloads efficiently, add more automated tests, and introduce role-based access control.
+
+The system could also benefit from a more modular architecture, better reporting, audit history and improved scalability of the validation process.
+
+### 8. If I had one additional week, what would I improve first?
+
+My first priority would be improving the roster generation algorithm and its conflict-resolution capabilities, especially for single-resource brands and employees shared across multiple brands and processes.
+
+I would also focus on:
+
+- More comprehensive roster validation and edge-case handling.
+- Persistent database storage instead of in-memory storage.
+- Better conflict explanations and suggestions for alternative allocations.
+- Automated testing of roster generation and staffing constraints.
+- UI improvements for editing, reviewing and managing generated rosters.
+
+These improvements would make the system more reliable, scalable and useful for real operational roster planning.
