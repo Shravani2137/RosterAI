@@ -36,6 +36,7 @@ button {
 }
 
 .app-shell {
+  width: 100%;
   padding: 24px;
   max-width: 1800px;
   margin: 0 auto;
@@ -45,8 +46,13 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 20px;
+}
+
+.topbar > * {
+  min-width: 0;
 }
 
 .eyebrow {
@@ -67,6 +73,8 @@ h1 {
   align-items: end;
   gap: 12px;
   flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .field-inline {
@@ -110,6 +118,9 @@ h1 {
 .layout {
   display: grid;
   grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  grid-template-areas:
+    "management dashboard"
+    "management summary";
   width: 100%;
   gap: 20px;
   align-items: start;
@@ -119,19 +130,20 @@ h1 {
 .center-panel,
 .right-panel {
   min-width: 0;
+  max-width: 100%;
 }
 
 .left-panel {
-  grid-column: 1;
+  grid-area: management;
 }
 
 .center-panel {
-  grid-column: 2;
+  grid-area: dashboard;
 }
 
 .right-panel {
-  grid-column: 1 / -1;
-  grid-template-columns: repeat(2, minmax(240px, 1fr));
+  grid-area: summary;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .panel, .card {
@@ -195,17 +207,26 @@ h1 {
 
 .center-panel {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
   width: 100%;
 }
 
+.center-panel > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .kpis {
   display: grid;
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
+  width: 100%;
+  min-width: 0;
 }
 
 .kpi {
+  min-width: 0;
   background: var(--panel);
   border: 1px solid var(--stroke);
   border-radius: 16px;
@@ -231,9 +252,16 @@ h1 {
   margin-bottom: 14px;
 }
 
+.filter-row select {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
 .roster-grid {
   overflow: auto;
+  width: 100%;
   max-width: 100%;
+  min-width: 0;
   border: 1px solid var(--stroke);
   border-radius: 12px;
 }
@@ -367,34 +395,18 @@ h1 {
   border-left: 4px solid var(--success);
 }
 
-@media (max-width: 1700px) {
-  .layout {
-    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
-  }
-
-  .left-panel {
-    grid-column: 1;
-  }
-
-  .center-panel {
-    grid-column: 2;
-  }
-
-  .right-panel {
-    grid-column: 1 / -1;
-    grid-template-columns: repeat(2, minmax(240px, 1fr));
-  }
-}
-
 @media (max-width: 980px) {
   .layout {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "management"
+      "dashboard"
+      "summary";
   }
 
   .left-panel,
   .center-panel,
   .right-panel {
-    grid-column: 1;
     width: 100%;
   }
 
@@ -422,8 +434,27 @@ h1 {
     grid-template-columns: repeat(2, minmax(120px, 1fr));
   }
 
+  .right-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .roster-shift {
     grid-template-columns: 1fr;
     gap: 4px;
+  }
+}
+
+@media (max-width: 420px) {
+  .app-shell {
+    padding: 12px;
+  }
+
+  .kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .toolbar {
+    align-items: stretch;
   }
 }
