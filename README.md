@@ -257,3 +257,60 @@ I would also focus on:
 - UI improvements for editing, reviewing and managing generated rosters.
 
 These improvements would make the system more reliable, scalable and useful for real operational roster planning.
+
+# Approach Note – RosterIQ (Smart Roster Management System)
+
+## 1. Solution Overview
+
+RosterIQ is a Smart Roster Management System designed to simplify workforce scheduling across multiple employees, pods, brands and operational processes. The main goal is to reduce manual roster planning, improve staffing visibility and identify scheduling conflicts.
+
+The application provides a centralized platform to manage employee records, pods, brands, processes, staffing assignments and roster rules, along with generating and validating monthly rosters.
+
+## 2. Architecture
+
+The project follows a client-server architecture.
+
+- **Frontend:** Built using HTML, CSS and JavaScript. It provides an interactive dashboard to manage employees, pods, brands, processes, assignments, rules and rosters.
+- **Backend:** Built using Node.js and Express.js. It provides REST API endpoints to manage data and handle roster-related operations.
+- **Data Management:** The backend currently uses in-memory data storage for managing records and demonstrating the system's functionality.
+- **Deployment:** The frontend is deployed on Vercel and the backend API is deployed on Render.
+
+The frontend communicates with the backend through REST APIs to retrieve and update information.
+
+## 3. Data Modelling and Key Decisions
+
+The system uses separate entities for employees, pods, brands, processes, assignments and rules.
+
+- Employees are associated with pods and have availability information such as weekly offs and active status.
+- Brands represent the clients or operational units requiring staffing.
+- Processes represent different operational functions such as CS, ACC, Retention and NDR.
+- Assignments define which employees are eligible to work on specific brands and processes.
+- Rules define staffing requirements and roster constraints.
+
+I kept these entities separate to make the system easier to manage, maintain and extend as staffing requirements change.
+
+## 4. Roster Generation and Validation
+
+The roster generation functionality uses employee availability, weekly offs, assignments and staffing requirements to organize employee schedules.
+
+Roster validation helps identify scheduling problems such as coverage gaps, employee availability conflicts and insufficient staffing. This helps managers review generated schedules before finalizing them.
+
+## 5. Handling Different Staffing Structures
+
+The system supports different staffing arrangements through employee assignments and configurable requirements.
+
+Some brands may require one dedicated employee to handle multiple processes, while others may require multiple employees sharing responsibilities. The system is designed to represent these different staffing structures without requiring the same staffing arrangement for every brand.
+
+## 6. Automation and Human Control
+
+Employee management, assignment management, roster generation and validation are handled through the application to reduce repetitive manual work.
+
+However, final roster review and conflict resolution remain under human control. This is important because operational requirements, employee availability and business priorities may require managerial decisions that cannot always be handled automatically.
+
+## 7. Scalability and Future Improvements
+
+If the number of employees and brands increases, I would introduce a persistent database, improve the scheduling algorithm, add role-based access control, implement more automated tests and improve reporting.
+
+With additional development time, I would prioritize improved conflict resolution, persistent storage, better roster editing capabilities, more detailed validation and automated testing for complex staffing scenarios.
+
+
